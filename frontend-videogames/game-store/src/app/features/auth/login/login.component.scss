@@ -96,6 +96,46 @@
   }
 }
 
+// ⬅️ NUEVO: Wrapper para input de contraseña con botón
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 3rem; // Espacio para el botón
+  }
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    border-radius: 0.25rem;
+
+    i {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      color: var(--primary-color);
+    }
+
+    &:focus {
+      outline: none;
+      color: var(--primary-color);
+    }
+  }
+}
+
 .error-message {
   background-color: rgba(239, 68, 68, 0.2);
   border: 1px solid #ef4444;
@@ -153,4 +193,75 @@
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
+}
+
+// ========================================
+// BOOTSTRAP OVERRIDES PARA LOGIN
+// ========================================
+
+// Mantener estilos custom en inputs con clase form-control
+.form-control {
+  background-color: rgba(55, 65, 81, 0.7) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  
+  &:focus {
+    background-color: rgba(55, 65, 81, 0.9) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
+    color: var(--text-primary) !important;
+  }
+
+  &::placeholder {
+    color: var(--text-secondary) !important;
+  }
+}
+
+// Mantener estilos custom en labels
+.form-label {
+  color: var(--text-secondary) !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 500 !important;
+}
+
+// Mantener estilos custom en botón submit
+.btn.submit-button {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #121212 !important;
+  
+  &:hover:not(:disabled) {
+    background-color: lighten(#ffc107, 10%) !important;
+    border-color: lighten(#ffc107, 10%) !important;
+  }
+
+  &:disabled {
+    background-color: #4b5563 !important;
+    border-color: #4b5563 !important;
+  }
+}
+
+// Mantener estilos custom en alert
+.alert {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #fca5a5 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem !important;
+  
+  .fas {
+    margin-right: 0.5rem;
+  }
+}
+
+// Spinner de Bootstrap con estilos custom
+.spinner-border {
+  width: 20px !important;
+  height: 20px !important;
+  border-width: 2px !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-top-color: white !important;
 }

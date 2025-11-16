@@ -28,24 +28,18 @@
               <tr>
                 <td class="order-id">#{{ order.id.slice(-6) }}</td>
                 <td>
-                  <div>{{ order.nombre_usuario }}</div>
-                  <small>{{ order.correo_usuario }}</small>
+                  <div>{{ order.usuario?.nombre }} {{ order.usuario?.apellido }}</div>
+                  <small>{{ order.usuario?.correo }}</small>
                 </td>
                 <td>{{ order.fecha_pedido | date:'short' }}</td>
-                <td>{{ order.total | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td>{{ order.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="order.estado">{{ order.estado }}</span>
                 </td>
                 <td class="actions-cell">
-
-                  <button class="action-button edit" title="Cambiar Estado del pedido" (click)="onViewDetails(order.id)">
+                  <button class="action-button edit" title="Ver detalles y cambiar estado" (click)="onViewDetails(order.id)">
                     <i class="fas fa-truck-fast"></i>
                   </button>
-
-                  <!-- <button class="action-button view" title="Cambiar estado">
-                    <i class="fas fa-truck-fast"></i>
-                  </button> -->
-
                 </td>
               </tr>
             }
@@ -59,8 +53,7 @@
   }
 </div>
 
-
-<!-- ¡Renderizado condicional del nuevo modal! -->
+<!-- Modal de Detalles del Pedido -->
 @if(selectedOrderId()){
   <app-order-detail-modal
     [orderId]="selectedOrderId()!"

@@ -1,3 +1,4 @@
+//src/app/features/auth/register/register.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -37,6 +38,8 @@ export class RegisterComponent {
 
   public formState = signal<FormState>('idle');
   public message = signal<string | null>(null);
+  public showPassword = signal<boolean>(false); // ⬅️ NUEVO
+
 
   onSubmit(): void {
     this.message.set(null);
@@ -62,4 +65,10 @@ export class RegisterComponent {
       }
     });
   }
+
+  // ⬅️ NUEVO: Toggle para mostrar/ocultar contraseña
+  togglePasswordVisibility(): void {
+    this.showPassword.set(!this.showPassword());
+  }
+
 }

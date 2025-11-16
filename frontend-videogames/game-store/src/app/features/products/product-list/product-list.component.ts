@@ -40,6 +40,9 @@ export class ProductListComponent {
     currentCategory: null, currentConsole: null, currentSearchTerm: null,
   });
 
+  // ⬅️ NUEVO: Estado del carrusel
+  carouselIndex = signal<number>(0);
+
   // La señal computada ahora prioriza el filtro por consola
   public filteredProducts = computed(() => {
     const s = this.state();
@@ -69,6 +72,24 @@ export class ProductListComponent {
       return productWithFullUrl;
     });
   });
+
+  // ⬅️ NUEVO: Calcular total de páginas
+  public totalPages = computed(() => {
+    const total = this.featuredProducts().length;
+    const pages = Math.ceil(total / 2);
+    return Array.from({ length: pages }, (_, i) => i); // [0, 1] para 4 productos
+  });
+
+  // ⬅️ CORREGIDO: Productos visibles en el carrusel (de 2 en 2, por páginas)
+  public visibleProducts = computed(() => {
+    const products = this.featuredProducts();
+    const pageIndex = this.carouselIndex() * 2;
+    return products.slice(pageIndex, pageIndex + 2);
+  });
+
+  // ⬅️ CORREGIDO: Controles del carrusel
+  public canGoPrev = computed(() => this.carouselIndex() > 0);
+  public canGoNext = computed(() => this.carouselIndex() < this.totalPages().length - 1);
 
   // ¡ACTUALIZADO! Los enlaces ahora apuntan a la nueva ruta de consola
   public brands: Brand[] = [
@@ -113,4 +134,32 @@ export class ProductListComponent {
       }
     });
   }
+
+  // ⬅️ NUEVO: Señal para controlar la dirección de la animación
+  slideDirection = signal<'left' | 'right'>('right');
+
+// ⬅️ MEJORADO: Métodos de navegación del carrusel con dirección
+nextSlide(): void {
+  if (this.canGoNext()) {
+    this.slideDirection.set('right');
+    this.carouselIndex.update(i => i + 1);
+  }
+}
+
+prevSlide(): void {
+  if (this.canGoPrev()) {
+    this.slideDirection.set('left');
+    this.carouselIndex.update(i => i - 1);
+  }
+}
+
+// ⬅️ NUEVO: Método para ir a una página específica
+goToPage(pageIndex: number): void {
+  if (pageIndex >= 0 && pageIndex < this.totalPages().length) {
+    const currentIndex = this.carouselIndex();
+    this.slideDirection.set(pageIndex > currentIndex ? 'right' : 'left');
+    this.carouselIndex.set(pageIndex);
+  }
+}
+
 }

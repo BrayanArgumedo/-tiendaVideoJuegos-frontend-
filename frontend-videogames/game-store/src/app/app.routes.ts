@@ -15,6 +15,8 @@ import { AdminPanelComponent } from './features/admin/admin-panel/admin-panel.co
 import { UserListComponent } from './features/admin/components/user-list/user-list.component';
 import { ProductManagementComponent } from './features/admin/components/product-management/product-management.component';
 import { OrderListComponent } from './features/admin/components/order-list/order-list.component';
+import { ReportsComponent } from './features/admin/components/reports/reports.component';  // ⬅️ IMPORTAR
+
 
 export const routes: Routes = [
   { path: '', redirectTo: 'productos', pathMatch: 'full' },
@@ -41,7 +43,8 @@ export const routes: Routes = [
       { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
       { path: 'usuarios', component: UserListComponent },
       { path: 'productos', component: ProductManagementComponent },
-      { path: 'pedidos', component: OrderListComponent }
+      { path: 'pedidos', component: OrderListComponent },
+      { path: 'reportes', component: ReportsComponent }  
     ]
   },
 

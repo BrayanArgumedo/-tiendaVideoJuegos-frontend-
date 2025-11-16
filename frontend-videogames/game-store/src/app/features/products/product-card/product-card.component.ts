@@ -1,3 +1,4 @@
+//src/app/features/products/product-card/product-card.component.ts
 import { Component, computed, input } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Product } from '../../../shared/models/product.model';

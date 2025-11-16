@@ -1,3 +1,4 @@
+//src/app/features/auth/login/login.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -29,6 +30,7 @@ export class LoginComponent {
   // Señales para manejar el estado de la UI
   public formState = signal<FormState>('idle');
   public errorMessage = signal<string | null>(null);
+  public showPassword = signal<boolean>(false); // ⬅️ NUEVO
 
   // --- Método de Envío del Formulario ---
   onSubmit(): void {
@@ -56,4 +58,10 @@ export class LoginComponent {
       }
     });
   }
+
+  // ⬅️ NUEVO: Toggle para mostrar/ocultar contraseña
+  togglePasswordVisibility(): void {
+    this.showPassword.set(!this.showPassword());
+  }
+
 }

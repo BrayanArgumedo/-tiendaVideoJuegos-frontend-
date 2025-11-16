@@ -88,22 +88,26 @@ export class CartService {
    * @returns Un Observable con la respuesta del backend.
    */
   checkout(shippingMethod: string): Observable<{success: boolean, message: string}> {
-    const cart = this._cartState();
-    const payload = {
-      shipping_method: shippingMethod,
-      items: cart.items.map(item => ({ id: item.id, cantidad: item.cantidad }))
-    };
-
-    return this.http.post<{success: boolean, message: string}>(this.API_URL, payload).pipe(
-      tap(response => {
-        // Si el pedido se crea exitosamente, vaciamos el carrito.
-        if (response.success) {
-          this.clearCart();
-        }
-      })
-    );
-  }
-
+  const cart = this._cartState();
+  
+  // ✅ PAYLOAD CORRECTO según el backend espera
+  const payload = {
+    productos: cart.items.map(item => ({
+      producto_id: item.id,  // ⬅️ CAMBIO: "producto_id" en lugar de "id"
+      cantidad: item.cantidad
+    })),
+    metodo_envio: shippingMethod,  // ⬅️ CAMBIO: "metodo_envio" en lugar de "shipping_method"
+    // direccion_envio es opcional, el backend usa valor por defecto
+  };
+  
+  return this.http.post<{success: boolean, message: string}>(this.API_URL, payload).pipe(
+    tap(response => {
+      if (response.success) {
+        this.clearCart();
+      }
+    })
+  );
+}
   // --- MÉTODOS PRIVADOS ---
   private recalculateCart(items: CartItem[]): Cart {
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);

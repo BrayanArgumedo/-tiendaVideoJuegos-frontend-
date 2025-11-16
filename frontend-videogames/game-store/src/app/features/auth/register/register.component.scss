@@ -98,6 +98,46 @@
   }
 }
 
+// ⬅️ NUEVO: Wrapper para input de contraseña con botón
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 3rem;
+  }
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    border-radius: 0.25rem;
+
+    i {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      color: var(--primary-color);
+    }
+
+    &:focus {
+      outline: none;
+      color: var(--primary-color);
+    }
+  }
+}
+
 // ... (El resto de los estilos para .message, .submit-button, etc. no cambian) ...
 .message {
   padding: 0.75rem;
@@ -164,4 +204,90 @@
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
+}
+
+// ========================================
+// BOOTSTRAP OVERRIDES PARA REGISTER
+// ========================================
+
+.form-control,
+.form-select {
+  background-color: rgba(55, 65, 81, 0.7) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  font-family: inherit !important;
+  transition: all 0.2s ease !important;
+  
+  &:focus {
+    background-color: rgba(55, 65, 81, 0.9) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25) !important;
+    color: var(--text-primary) !important;
+  }
+
+  &::placeholder {
+    color: var(--text-secondary) !important;
+  }
+}
+
+.form-select {
+  option {
+    background-color: #1e1e1e !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+.form-label {
+  color: var(--text-secondary) !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 500 !important;
+}
+
+.btn.submit-button {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #121212 !important;
+  transition: all 0.3s ease !important;
+  
+  &:hover:not(:disabled) {
+    background-color: #ffd54f !important;
+    border-color: #ffd54f !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2) !important;
+  }
+
+  &:disabled {
+    background-color: #4b5563 !important;
+    border-color: #4b5563 !important;
+    cursor: not-allowed !important;
+  }
+}
+
+.alert {
+  border-radius: 0.5rem !important;
+  padding: 0.75rem !important;
+  font-weight: 500 !important;
+  
+  &.alert-danger {
+    background-color: rgba(239, 68, 68, 0.2) !important;
+    border-color: #ef4444 !important;
+    color: #fca5a5 !important;
+  }
+
+  &.alert-success {
+    background-color: rgba(45, 212, 191, 0.2) !important;
+    border-color: #2dd4bf !important;
+    color: #5eead4 !important;
+  }
+}
+
+.spinner-border {
+  width: 20px !important;
+  height: 20px !important;
+  border-width: 2px !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-top-color: white !important;
 }

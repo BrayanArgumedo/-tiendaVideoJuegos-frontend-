@@ -1,0 +1,92 @@
+<!-- src/app/features/admin/components/reports/reports.component.html -->
+<div class="reports-container">
+  <div class="reports-header">
+    <h1>Generación de Reportes</h1>
+    <p>Selecciona un tipo de reporte para descargarlo en formato PDF</p>
+  </div>
+
+  <div class="reports-grid">
+    
+    <!-- Tarjeta: Reporte de Ventas -->
+    <div class="report-card">
+      <div class="report-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      
+      <h3>Reporte de Ventas</h3>
+      <p>Un resumen completo de todos los pedidos realizados, sus estados y el total de ingresos.</p>
+
+      <!-- Filtros de fecha -->
+      <div class="date-filters">
+        <div class="filter-group">
+          <label for="fecha-inicio">Desde:</label>
+          <input 
+            type="date" 
+            id="fecha-inicio" 
+            [(ngModel)]="fechaInicio"
+            [value]="fechaInicio()"
+            (change)="fechaInicio.set($any($event.target).value)"
+          >
+        </div>
+        <div class="filter-group">
+          <label for="fecha-fin">Hasta:</label>
+          <input 
+            type="date" 
+            id="fecha-fin" 
+            [(ngModel)]="fechaFin"
+            [value]="fechaFin()"
+            (change)="fechaFin.set($any($event.target).value)"
+          >
+        </div>
+      </div>
+
+      <button 
+        class="download-button"
+        (click)="downloadSalesReport()"
+        [disabled]="salesReportState() === 'loading'"
+      >
+        @if(salesReportState() === 'loading') {
+          <span class="spinner"></span>
+          Generando...
+        } @else if(salesReportState() === 'success') {
+          ✅ Descargado
+        } @else {
+          <i class="fas fa-download"></i>
+          Generar PDF
+        }
+      </button>
+    </div>
+
+    <!-- Tarjeta: Reporte de Inventario -->
+    <div class="report-card">
+      <div class="report-icon">
+        <i class="fas fa-boxes"></i>
+      </div>
+      
+      <h3>Reporte de Inventario</h3>
+      <p>Una lista detallada de todos los productos en el catálogo, incluyendo precios y stock actual.</p>
+
+      <div class="info-note">
+        <i class="fas fa-info-circle"></i>
+        <span>Incluye todos los productos disponibles</span>
+      </div>
+
+      <button 
+        class="download-button"
+        (click)="downloadInventoryReport()"
+        [disabled]="inventoryReportState() === 'loading'"
+      >
+        @if(inventoryReportState() === 'loading') {
+          <span class="spinner"></span>
+          Generando...
+        } @else if(inventoryReportState() === 'success') {
+          ✅ Descargado
+        } @else {
+          <i class="fas fa-download"></i>
+          Generar PDF
+        }
+      </button>
+    </div>
+
+  </div>
+</div>

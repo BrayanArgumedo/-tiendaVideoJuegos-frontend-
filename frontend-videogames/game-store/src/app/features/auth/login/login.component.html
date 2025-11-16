@@ -1,8 +1,7 @@
+<!--login.component.html-->
 <div class="login-page">
-  <!-- Este div será nuestro fondo con la imagen -->
   <div class="login-background"></div>
 
-  <!-- El contenedor del formulario ahora se superpone -->
   <div class="login-container">
     <div class="login-header">
       <i class="fas fa-gamepad logo-icon"></i>
@@ -13,11 +12,14 @@
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
 
       <div class="form-group">
-        <label for="correo">Correo Electrónico</label>
+        <!-- ⬅️ BOOTSTRAP: form-label -->
+        <label for="correo" class="form-label">Correo Electrónico</label>
+        <!-- ⬅️ BOOTSTRAP: form-control -->
         <input
           id="correo"
           type="email"
           name="correo"
+          class="form-control"
           [(ngModel)]="credentials.correo"
           placeholder="tu@correo.com"
           required
@@ -26,29 +28,46 @@
       </div>
 
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          [(ngModel)]="credentials.password"
-          placeholder="••••••••"
-          required
-          #passwordInput="ngModel">
+        <!-- ⬅️ BOOTSTRAP: form-label -->
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="password-input-wrapper">
+          <!-- ⬅️ BOOTSTRAP: form-control -->
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            name="password"
+            class="form-control"
+            [(ngModel)]="credentials.password"
+            placeholder="••••••••"
+            required
+            #passwordInput="ngModel">
+          <button 
+            type="button" 
+            class="toggle-password-btn"
+            (click)="togglePasswordVisibility()"
+            tabindex="-1"
+            title="Mostrar/Ocultar contraseña">
+            <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
       </div>
 
       @if (formState() === 'error' && errorMessage()) {
-        <div class="error-message">
+        <!-- ⬅️ BOOTSTRAP: alert alert-danger -->
+        <div class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i>
           {{ errorMessage() }}
         </div>
       }
 
+      <!-- ⬅️ BOOTSTRAP: btn btn-warning -->
       <button
         type="submit"
-        class="submit-button"
+        class="btn btn-warning submit-button"
         [disabled]="loginForm.invalid || formState() === 'loading'">
         @if (formState() === 'loading') {
-          <span class="spinner"></span>
+          <!-- ⬅️ BOOTSTRAP: spinner-border -->
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           <span>Validando...</span>
         } @else {
           <span>Ingresar</span>

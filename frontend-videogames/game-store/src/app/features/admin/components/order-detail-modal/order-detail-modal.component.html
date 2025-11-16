@@ -20,15 +20,27 @@
       <div class="info-card">
         <div class="info-item">
           <label><i class="fas fa-user"></i> Cliente</label>
-          <span>{{ orderDetails()!.cliente_nombre }}</span>
+          <span>{{ orderDetails()!.usuario.nombre }} {{ orderDetails()!.usuario.apellido }}</span>
         </div>
         <div class="info-item">
           <label><i class="fas fa-envelope"></i> Correo</label>
-          <span>{{ orderDetails()!.cliente_correo }}</span>
+          <span>{{ orderDetails()!.usuario.correo }}</span>
+        </div>
+        <div class="info-item">
+          <label><i class="fas fa-phone"></i> Teléfono</label>
+          <span>{{ orderDetails()!.usuario.telefono }}</span>
         </div>
         <div class="info-item full-width">
           <label><i class="fas fa-map-marker-alt"></i> Dirección de Envío</label>
-          <span>{{ orderDetails()!.cliente_direccion }}, {{ orderDetails()!.cliente_pais }}</span>
+          <span>{{ orderDetails()!.direccion_envio }}</span>
+        </div>
+        <div class="info-item">
+          <label><i class="fas fa-shipping-fast"></i> Método de Envío</label>
+          <span>
+            @if(orderDetails()!.metodo_envio === 'standard') { Estándar }
+            @else if(orderDetails()!.metodo_envio === 'express') { Express }
+            @else if(orderDetails()!.metodo_envio === 'pickup') { Recoger en Tienda }
+          </span>
         </div>
       </div>
 
@@ -39,22 +51,40 @@
           <thead>
             <tr>
               <th>Producto</th>
+              <th>Consola</th>
               <th>Cantidad</th>
               <th class="text-right">Precio Unit.</th>
               <th class="text-right">Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            @for(item of orderDetails()!.items; track item.nombre_producto){
+            @for(item of orderDetails()!.detalles; track item.id){
               <tr>
-                <td>{{ item.nombre_producto }}</td>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.producto.consola }}</td>
                 <td>x{{ item.cantidad }}</td>
-                <td class="text-right">{{ item.precio_unitario | currency:'USD' }}</td>
-                <td class="text-right font-bold">{{ (+item.precio_unitario * item.cantidad) | currency:'USD' }}</td>
+                <td class="text-right">{{ item.precio_unitario | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                <td class="text-right font-bold">{{ (item.precio_unitario * item.cantidad) | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
               </tr>
             }
           </tbody>
         </table>
+      </div>
+
+      <!-- Resumen de Totales -->
+      <div class="totals-summary">
+        <div class="total-row">
+          <span>Subtotal:</span>
+          <span>{{ orderDetails()!.subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        <div class="total-row">
+          <span>Envío:</span>
+          <span>{{ orderDetails()!.costo_envio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        <div class="total-row total-final">
+          <span>Total:</span>
+          <span>{{ orderDetails()!.total | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
       </div>
     </div>
 
@@ -72,6 +102,16 @@
         </select>
       </div>
       <div class="footer-actions">
+        <!-- NUEVO: Botón de factura -->
+        <button 
+          type="button" 
+          class="button-download" 
+          (click)="downloadInvoice()"
+          title="Descargar factura en PDF"
+        >
+          <i class="fas fa-file-pdf"></i>
+          Factura PDF
+        </button>
         <button type="button" class="button-secondary" (click)="onClose()">Cerrar</button>
         <button type="button" class="button-primary" (click)="onUpdateStatus()">Actualizar Estado</button>
       </div>

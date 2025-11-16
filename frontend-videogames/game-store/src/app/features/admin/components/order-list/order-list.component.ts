@@ -35,22 +35,23 @@ export class OrderListComponent {
   }
 
   loadOrders(): void {
-    this.state.set({ orders: [], loading: true, error: null });
-
-    // Ahora pasamos explícitamente el contexto de destrucción.
-    // Esto funcionará sin importar desde dónde se llame al método.
-    this.adminService.getOrders()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.state.update(s => ({ ...s, orders: response.records, loading: false }));
-        },
-        error: (err) => {
-          this.state.update(s => ({ ...s, error: 'No se pudieron cargar los pedidos.', loading: false }));
-          console.error(err);
-        }
-      });
-  }
+  console.log('🔄 OrderListComponent: Cargando pedidos...');
+  this.state.set({ orders: [], loading: true, error: null });
+  
+  this.adminService.getOrders()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (response) => {
+        console.log('✅ OrderListComponent: Pedidos recibidos:', response);
+        console.log('📊 Total de pedidos:', response.records?.length || 0);
+        this.state.update(s => ({ ...s, orders: response.records, loading: false }));
+      },
+      error: (err) => {
+        console.error('❌ OrderListComponent: Error al cargar pedidos:', err);
+        this.state.update(s => ({ ...s, error: 'No se pudieron cargar los pedidos.', loading: false }));
+      }
+    });
+}
 
   onViewDetails(orderId: string): void {
     this.selectedOrderId.set(orderId);

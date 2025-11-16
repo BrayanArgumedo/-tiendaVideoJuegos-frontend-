@@ -1,10 +1,11 @@
-// --- Estilos Generales ---
+// src/app/features/products/product-list/product-list.component.scss
+
 :host {
   display: block;
 }
 
 .product-list-page {
-  position: relative; // Necesario para que el fondo se posicione correctamente y para que el componente pueda ser anulado
+  position: relative;
   max-width: 1600px;
   margin: 0 auto;
   padding: 2rem;
@@ -20,37 +21,104 @@
   letter-spacing: 0.1em;
 }
 
-// --- Estilos del Carrusel ---
+// ⬅️ NUEVO: ESTILOS DEL CARRUSEL CON FLECHAS
 .hero-carousel-section {
   margin-bottom: 4rem;
 }
 
-.carousel-container {
+.carousel-wrapper {
+  position: relative;
   display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 1.5rem;
-  padding-bottom: 1.5rem;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
 
-  // Ocultar barra de scroll
-  &::-webkit-scrollbar { display: none; }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.carousel-btn {
+  background-color: rgba(255, 193, 7, 0.9);
+  color: #1a1a1a;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+  z-index: 10;
+  flex-shrink: 0;
+
+  &:hover:not(.disabled) {
+    background-color: var(--primary-color);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  }
+
+  &.disabled {
+    background-color: rgba(75, 85, 99, 0.5);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+  }
+
+  &:active:not(.disabled) {
+    transform: scale(0.95);
+  }
+}
+
+.carousel-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  overflow: hidden; // ⬅️ NUEVO
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ⬅️ ANIMACIÓN DESDE LA DERECHA
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ⬅️ NUEVO: ANIMACIÓN DESDE LA IZQUIERDA
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .carousel-slide {
-  flex: 0 0 70%;
-  max-width: 70%;
-  height: 400px;
-  scroll-snap-align: center;
   position: relative;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   display: block;
+  height: 400px;
+  transition: transform 0.3s ease;
+  // ⬅️ ELIMINAR: animation: slideInFromRight 0.5s ease-out;
 
-  @media (min-width: 768px) {
-    flex-basis: 45%;
-    max-width: 45%;
+  // ⬅️ NUEVO: Aplicar animación según la dirección
+  &.slide-from-right {
+    animation: slideInFromRight 0.5s ease-out;
+  }
+
+  &.slide-from-left {
+    animation: slideInFromLeft 0.5s ease-out;
   }
 
   img {
@@ -65,23 +133,73 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     padding: 2rem 1.5rem 1.5rem;
     color: white;
+
     h3 {
       font-size: 1.5rem;
       font-weight: 700;
-      margin: 0;
+      margin: 0 0 0.5rem 0;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .product-console {
+      font-size: 0.9rem;
+      color: var(--primary-color);
+      margin: 0 0 0.5rem 0;
+      font-weight: 500;
+    }
+
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0;
     }
   }
 
-  &:hover img {
-    transform: scale(1.05);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+    img {
+      transform: scale(1.05);
+    }
   }
 }
 
-// --- Estilos de la Sección de Marcas ---
+// Indicadores de posición del carrusel
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem; 
+  margin-bottom: 0;
+  position: relative; // ⬅️ Asegurar posicionamiento
+  z-index: 5; // ⬅️ Por encima del carrusel
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.active {
+      background-color: var(--primary-color);
+      width: 30px;
+      border-radius: 5px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 193, 7, 0.6);
+    }
+  }
+}
+
+// Estilos de la Sección de Marcas
 .brand-showcase-section {
   margin-bottom: 4rem;
 }
@@ -97,11 +215,13 @@
 .brand-logo {
   display: block;
   transition: transform 0.3s ease;
+  
   img {
     height: 50px;
     filter: grayscale(100%) opacity(0.5);
     transition: filter 0.3s ease;
   }
+  
   &:hover {
     transform: scale(1.1);
     img {
@@ -110,7 +230,7 @@
   }
 }
 
-// --- Estilos del Catálogo ---
+// Estilos del Catálogo
 .catalog-section {
   .page-title {
     font-size: 2.5rem;
@@ -120,11 +240,13 @@
     color: var(--text-primary);
     text-align: center;
   }
+  
   .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
   }
+  
   .state-container {
     text-align: center;
     padding: 4rem;

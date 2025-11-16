@@ -8,19 +8,60 @@
 
   <!-- La condición @if ahora oculta estas secciones si hay cualquier tipo de filtro activo -->
   @if (!state().currentCategory && !state().currentSearchTerm && !state().currentConsole) {
-    <!-- --- SECCIÓN DEL CARRUSEL --- -->
+
+     <!-- ⬅️ NUEVO: CARRUSEL CON FLECHAS DE NAVEGACIÓN -->
     <section class="hero-carousel-section">
       <h2 class="section-title">Novedades</h2>
-      <div class="carousel-container">
-        @for (product of featuredProducts(); track product.id) {
-          <a [routerLink]="['/productos', product.id]" class="carousel-slide">
-            <img [src]="product.imagen_url" [alt]="product.nombre">
-            <div class="slide-overlay">
-              <h3>{{ product.nombre }}</h3>
-            </div>
-          </a>
-        }
+      
+      <div class="carousel-wrapper">
+        <!-- Flecha Izquierda -->
+        <button 
+          class="carousel-btn prev" 
+          (click)="prevSlide()" 
+          [disabled]="!canGoPrev()"
+          [class.disabled]="!canGoPrev()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Contenedor de productos -->
+        <div class="carousel-container">
+          @for (product of visibleProducts(); track product.id) {
+            <a 
+              [routerLink]="['/productos', product.id]" 
+              class="carousel-slide"
+              [class.slide-from-right]="slideDirection() === 'right'"
+              [class.slide-from-left]="slideDirection() === 'left'">
+              <img [src]="product.imagen_url" [alt]="product.nombre">
+              <div class="slide-overlay">
+                <h3>{{ product.nombre }}</h3>
+                <p class="product-console">{{ product.consola }}</p>
+                <p class="product-price">{{ product.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+              </div>
+            </a>
+          }
+        </div>
+
+        <!-- Flecha Derecha -->
+        <button 
+          class="carousel-btn next" 
+          (click)="nextSlide()" 
+          [disabled]="!canGoNext()"
+          [class.disabled]="!canGoNext()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
+
+      <!-- Indicadores de posición -->
+     <!-- Indicadores de posición -->
+<div class="carousel-indicators">
+  @for (page of totalPages(); track page; let i = $index) {
+    <span 
+      class="indicator" 
+      [class.active]="carouselIndex() === i"
+      (click)="goToPage(i)">
+    </span>
+  }
+</div>
     </section>
 
     <!-- --- SECCIÓN DE MARCAS --- -->
