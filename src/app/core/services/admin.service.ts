@@ -1,12 +1,18 @@
 // src/app/core/services/admin.service.ts
-import { Injectable } from '@angular/core';
-import { inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { User } from '../../shared/models/user.model';
-import { Product, ProductApiResponse } from '../../shared/models/product.model';
-import { Order, OrdersApiResponse, OrderDetail, OrderDetailApiResponse, OrderItem } from '../../shared/models/order.model';
+import { Injectable } from "@angular/core";
+import { inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
+import { User } from "../../shared/models/user.model";
+import { Product, ProductApiResponse } from "../../shared/models/product.model";
+import {
+  Order,
+  OrdersApiResponse,
+  OrderDetail,
+  OrderDetailApiResponse,
+  OrderItem,
+} from "../../shared/models/order.model";
 
 // Interfaz para la respuesta del endpoint de leer todos los usuarios
 interface UsersApiResponse {
@@ -21,10 +27,9 @@ interface ApiResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AdminService {
-
   private http = inject(HttpClient);
   private readonly USERS_API_URL = `${environment.API_BASE_URL}/usuarios`;
   private readonly PRODUCTS_API_URL = `${environment.API_BASE_URL}/productos`;
@@ -62,7 +67,6 @@ export class AdminService {
     return this.http.put<ApiResponse>(`${this.USERS_API_URL}/${id}`, userData);
   }
 
-
   // --- ¡NUEVOS MÉTODOS DE PRODUCTOS! ---
 
   /**
@@ -86,8 +90,14 @@ export class AdminService {
    * @param id - El ID del producto a actualizar.
    * @param productData - Los nuevos datos del producto.
    */
-  updateProduct(id: string, productData: Partial<Product>): Observable<ApiResponse> {
-    return this.http.put<ApiResponse>(`${this.PRODUCTS_API_URL}/${id}`, productData);
+  updateProduct(
+    id: string,
+    productData: Partial<Product>,
+  ): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(
+      `${this.PRODUCTS_API_URL}/${id}`,
+      productData,
+    );
   }
 
   /**
@@ -103,54 +113,66 @@ export class AdminService {
    * @param id El ID del producto.
    * @param imageFile El archivo de imagen a subir.
    */
-  uploadProductImage(id: string, imageFile: File): Observable<{ success: boolean; message: string; url: string }> {
+  uploadProductImage(
+    id: string,
+    imageFile: File,
+  ): Observable<{ success: boolean; message: string; url: string }> {
     const formData = new FormData();
     // La clave 'imagen' debe coincidir con la que espera el backend en $_FILES['imagen']
-    formData.append('imagen', imageFile, imageFile.name);
+    formData.append("imagen", imageFile, imageFile.name);
 
     return this.http.post<{ success: boolean; message: string; url: string }>(
       `${this.PRODUCTS_API_URL}/${id}/imagen`,
-      formData
+      formData,
     );
   }
 
   // Ahora los Pedidos
 
-/**
- * Obtiene la lista completa de todos los pedidos.
- * La API se encarga de que esta ruta solo sea accesible para administradores.
- */
-getOrders(): Observable<OrdersApiResponse> {
-  console.log('📡 AdminService: Llamando a /pedidos/admin/all');
-  return this.http.get<OrdersApiResponse>(`${this.ORDERS_API_URL}/admin/all`);
-  // Ahora llama a: /api/pedidos/admin/all ✅ CORRECTO
-}
+  /**
+   * Obtiene la lista completa de todos los pedidos.
+   * La API se encarga de que esta ruta solo sea accesible para administradores.
+   */
+  getOrders(): Observable<OrdersApiResponse> {
+    console.log("📡 AdminService: Llamando a /pedidos/admin/all");
+    return this.http.get<OrdersApiResponse>(`${this.ORDERS_API_URL}/admin/all`);
+    // Ahora llama a: /api/pedidos/admin/all
+  }
 
   /**
- * Obtiene los detalles completos de un pedido específico.
- */
+   * Obtiene los detalles completos de un pedido específico.
+   */
   getOrderDetails(id: string): Observable<OrderDetailApiResponse> {
-    console.log('📡 AdminService: Obteniendo detalles del pedido', id);
-    return this.http.get<OrderDetailApiResponse>(`${this.ORDERS_API_URL}/${id}`);
+    console.log("📡 AdminService: Obteniendo detalles del pedido", id);
+    return this.http.get<OrderDetailApiResponse>(
+      `${this.ORDERS_API_URL}/${id}`,
+    );
   }
-  
+
   /**
    * Actualiza el estado de un pedido.
    */
   updateOrderStatus(id: string, newStatus: string): Observable<ApiResponse> {
-  console.log('📡 AdminService: Actualizando estado del pedido', id, 'a', newStatus);
-  return this.http.put<ApiResponse>(`${this.ORDERS_API_URL}/${id}/estado`, { estado: newStatus });
-  //                                                         ↑ AGREGAR "/estado"
-}
+    console.log(
+      "📡 AdminService: Actualizando estado del pedido",
+      id,
+      "a",
+      newStatus,
+    );
+    return this.http.put<ApiResponse>(`${this.ORDERS_API_URL}/${id}/estado`, {
+      estado: newStatus,
+    });
+    //                                                         ↑ AGREGAR "/estado"
+  }
 
   /**
    * Descarga la factura de un pedido en PDF
    * @param orderId - ID del pedido
    */
   downloadInvoicePDF(orderId: string): Observable<Blob> {
-    console.log('📄 AdminService: Descargando factura del pedido', orderId);
+    console.log("📄 AdminService: Descargando factura del pedido", orderId);
     return this.http.get(`${this.ORDERS_API_URL}/${orderId}/factura/pdf`, {
-      responseType: 'blob'  // ⬅️ IMPORTANTE: Indica que la respuesta es un archivo binario
+      responseType: "blob",
     });
   }
 
@@ -159,22 +181,25 @@ getOrders(): Observable<OrdersApiResponse> {
    * @param fechaInicio - Fecha de inicio (opcional)
    * @param fechaFin - Fecha de fin (opcional)
    */
-  downloadSalesReportPDF(fechaInicio?: string, fechaFin?: string): Observable<Blob> {
-    console.log('📊 AdminService: Descargando reporte de ventas');
-    
+  downloadSalesReportPDF(
+    fechaInicio?: string,
+    fechaFin?: string,
+  ): Observable<Blob> {
+    console.log("📊 AdminService: Descargando reporte de ventas");
+
     let url = `${environment.API_BASE_URL}/admin/reportes/ventas/pdf`;
-    
+
     // Agregar parámetros de fecha si existen
     const params: string[] = [];
     if (fechaInicio) params.push(`fecha_inicio=${fechaInicio}`);
     if (fechaFin) params.push(`fecha_fin=${fechaFin}`);
-    
+
     if (params.length > 0) {
-      url += `?${params.join('&')}`;
+      url += `?${params.join("&")}`;
     }
-    
+
     return this.http.get(url, {
-      responseType: 'blob'
+      responseType: "blob",
     });
   }
 
@@ -183,10 +208,12 @@ getOrders(): Observable<OrdersApiResponse> {
    * (Este endpoint aún no existe en el backend, lo crearemos después)
    */
   downloadInventoryReportPDF(): Observable<Blob> {
-    console.log('📦 AdminService: Descargando reporte de inventario');
-    return this.http.get(`${environment.API_BASE_URL}/admin/reportes/inventario/pdf`, {
-      responseType: 'blob'
-    });
+    console.log("📦 AdminService: Descargando reporte de inventario");
+    return this.http.get(
+      `${environment.API_BASE_URL}/admin/reportes/inventario/pdf`,
+      {
+        responseType: "blob",
+      },
+    );
   }
-
 }

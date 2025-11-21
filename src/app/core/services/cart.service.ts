@@ -1,11 +1,11 @@
 // src/app/core/services/cart.service.ts
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Cart, CartItem } from '../../shared/models/cart.model';
-import { Product } from '../../shared/models/product.model';
-import { environment } from '../../../environments/environment';
+import { Injectable, signal, computed, effect, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
+import { Cart, CartItem } from "../../shared/models/cart.model";
+import { Product } from "../../shared/models/product.model";
+import { environment } from "../../../environments/environment";
 
 const INITIAL_STATE: Cart = {
   items: [],
@@ -14,10 +14,10 @@ const INITIAL_STATE: Cart = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class CartService {
-  private readonly CART_KEY = 'shopping_cart';
+  private readonly CART_KEY = "shopping_cart";
   private http = inject(HttpClient);
   private readonly API_URL = `${environment.API_BASE_URL}/pedidos`;
 
@@ -34,13 +34,17 @@ export class CartService {
   // --- MÉTODOS PÚBLICOS PARA MANIPULAR EL CARRITO ---
 
   addItem(product: Product): void {
-    this._cartState.update(currentCart => {
-      const existingItem = currentCart.items.find(item => item.id === product.id);
+    this._cartState.update((currentCart) => {
+      const existingItem = currentCart.items.find(
+        (item) => item.id === product.id,
+      );
       let updatedItems: CartItem[];
 
       if (existingItem) {
-        updatedItems = currentCart.items.map(item =>
-          item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+        updatedItems = currentCart.items.map((item) =>
+          item.id === product.id
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item,
         );
       } else {
         const newItem: CartItem = {
@@ -57,23 +61,27 @@ export class CartService {
   }
 
   updateItemQuantity(productId: string, newQuantity: number): void {
-    this._cartState.update(currentCart => {
+    this._cartState.update((currentCart) => {
       let updatedItems: CartItem[];
       if (newQuantity > 0) {
-        updatedItems = currentCart.items.map(item =>
-          item.id === productId ? { ...item, cantidad: newQuantity } : item
+        updatedItems = currentCart.items.map((item) =>
+          item.id === productId ? { ...item, cantidad: newQuantity } : item,
         );
       } else {
         // Si la cantidad es 0 o menos, eliminamos el item.
-        updatedItems = currentCart.items.filter(item => item.id !== productId);
+        updatedItems = currentCart.items.filter(
+          (item) => item.id !== productId,
+        );
       }
       return this.recalculateCart(updatedItems);
     });
   }
 
   removeItem(productId: string): void {
-    this._cartState.update(currentCart => {
-      const updatedItems = currentCart.items.filter(item => item.id !== productId);
+    this._cartState.update((currentCart) => {
+      const updatedItems = currentCart.items.filter(
+        (item) => item.id !== productId,
+      );
       return this.recalculateCart(updatedItems);
     });
   }
@@ -87,36 +95,42 @@ export class CartService {
    * @param shippingMethod - El método de envío elegido ('standard', 'express', 'pickup').
    * @returns Un Observable con la respuesta del backend.
    */
-  checkout(shippingMethod: string): Observable<{success: boolean, message: string}> {
-  const cart = this._cartState();
-  
-  // ✅ PAYLOAD CORRECTO según el backend espera
-  const payload = {
-    productos: cart.items.map(item => ({
-      producto_id: item.id,  // ⬅️ CAMBIO: "producto_id" en lugar de "id"
-      cantidad: item.cantidad
-    })),
-    metodo_envio: shippingMethod,  // ⬅️ CAMBIO: "metodo_envio" en lugar de "shipping_method"
-    // direccion_envio es opcional, el backend usa valor por defecto
-  };
-  
-  return this.http.post<{success: boolean, message: string}>(this.API_URL, payload).pipe(
-    tap(response => {
-      if (response.success) {
-        this.clearCart();
-      }
-    })
-  );
-}
+  checkout(
+    shippingMethod: string,
+  ): Observable<{ success: boolean; message: string }> {
+    const cart = this._cartState();
+
+    const payload = {
+      productos: cart.items.map((item) => ({
+        producto_id: item.id,
+        cantidad: item.cantidad,
+      })),
+      metodo_envio: shippingMethod,
+      // direccion_envio es opcional, el backend usa valor por defecto
+    };
+
+    return this.http
+      .post<{ success: boolean; message: string }>(this.API_URL, payload)
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            this.clearCart();
+          }
+        }),
+      );
+  }
   // --- MÉTODOS PRIVADOS ---
   private recalculateCart(items: CartItem[]): Cart {
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);
-    const totalPrice = items.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+    const totalPrice = items.reduce(
+      (acc, item) => acc + item.precio * item.cantidad,
+      0,
+    );
     return { items, totalItems, totalPrice };
   }
 
   private loadCartFromStorage(): void {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const savedCartJson = localStorage.getItem(this.CART_KEY);
       if (savedCartJson) {
         this._cartState.set(JSON.parse(savedCartJson));
@@ -125,7 +139,7 @@ export class CartService {
   }
 
   private saveCartToStorage(cart: Cart): void {
-     if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       localStorage.setItem(this.CART_KEY, JSON.stringify(cart));
     }
   }
